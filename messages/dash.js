@@ -77,13 +77,13 @@ async function sendPanel(channel, member) {
   if (canEmbed) {
     dashboardEmbed.addFields(
       {
-        name: "<:generalsupport:1434987840118460416> General Support",
+        name: "<:webhook_blue:1440036551152242879> General Support",
         value:
           ">>> <:sflrpbullet2:1435684662314930216> General Inquiries\n<:sflrpbullet2:1435684662314930216> Community Concerns\n<:sflrpbullet2:1435684662314930216> Department Questions\n<:sflrpbullet2:1435684662314930216> Information",
         inline: true,
       },
       {
-        name: "<:settingsflrp:1434930873584582748> Management Support",
+        name: "<:support:1439649520219852850> Management Support",
         value:
           ">>> <:sflrpbullet2:1435684662314930216> Reports\n<:sflrpbullet2:1435684662314930216> Claiming Perks\n<:sflrpbullet2:1435684662314930216> Punishment Appeal\n<:sflrpbullet2:1435684662314930216> Partnerships",
         inline: true,
@@ -100,11 +100,11 @@ async function sendPanel(channel, member) {
       new StringSelectMenuOptionBuilder()
         .setLabel("General Support")
         .setValue("general")
-        .setEmoji({ id: "1434987840118460416", name: "generalsupport" }),
+        .setEmoji({ id: "1440036551152242879", name: "webhook_blue" }),
       new StringSelectMenuOptionBuilder()
         .setLabel("Management Support")
         .setValue("management")
-        .setEmoji({ id: "1434930873584582748", name: "settingsflrp" })
+        .setEmoji({ id: "1435684662314930216", name: "support" })
     );
 
   const row = new ActionRowBuilder().addComponents(ticketSelect);
@@ -168,4 +168,5 @@ module.exports = {
   },
   sendPanel,
 };
+
 
