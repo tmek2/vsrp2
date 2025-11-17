@@ -5,7 +5,7 @@ const { erlcEmoji, ephemeralEmoji } = require('../utils/emoji');
 const { requireRole } = require('../utils/roleGate');
 
 const PRC_KEY = process.env.PRC_KEY || '';
-const ERLC_EMBED_COLOR = process.env.ERLC_EMBED_COLOR || '#2b2d31';
+const ERLC_EMBED_COLOR = process.env.ERLC_EMBED_COLOR || '#4c79eb';
 const ERLC_TIMEOUT_MS = Number(process.env.ERLC_TIMEOUT_MS || 10000);
 const REQUIRED_ROLE_ID = process.env.JOINLOGS_REQUIRED_ROLE_ID || process.env.SESSIONS_REQUIRED_ROLE_ID || '';
 
@@ -69,4 +69,5 @@ module.exports = {
       try { await interaction.editReply({ content: msg }); } catch {}
     }
   }
+
 };
