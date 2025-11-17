@@ -15,7 +15,7 @@ const TARGET_CHANNEL_ID = process.env.TICKET_PANEL_CHANNEL_ID || "";
 const PANEL_SCAN_LIMIT = Number(process.env.PANEL_HISTORY_SCAN_LIMIT || 50);
 const PANEL_IMAGE_1_URL = process.env.TICKET_PANEL_IMAGE_1_URL || process.env.DASH_IMAGE_URL || "";
 const PANEL_IMAGE_2_URL = process.env.TICKET_PANEL_IMAGE_2_URL || "";
-const GLOBAL_EMBED_COLOR = process.env.GLOBAL_EMBED_COLOR || '#fc2f56';
+const GLOBAL_EMBED_COLOR = process.env.GLOBAL_EMBED_COLOR || '#4c79eb';
 const COLOR_HEX = GLOBAL_EMBED_COLOR || process.env.DASH_COLOR || "#2b2d31"; // default dark gray
 const { ephemeralEmoji } = require('../utils/emoji');
 
@@ -168,3 +168,4 @@ module.exports = {
   },
   sendPanel,
 };
+
