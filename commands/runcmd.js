@@ -86,7 +86,7 @@ module.exports = {
             const embed = new EmbedBuilder()
               .setTitle('ER:LC Remote Command')
               .setDescription(`${interaction.user.username} used remote server to run \`${cmd}\``)
-              .setColor(process.env.GLOBAL_EMBED_COLOR || '#fc2f56')
+              .setColor(process.env.GLOBAL_EMBED_COLOR || '#4c79eb')
               .setTimestamp();
             await channel.send({ embeds: [embed] });
           }
@@ -99,4 +99,5 @@ module.exports = {
       try { await interaction.editReply({ content: msg }); } catch {}
     }
   }
+
 };
