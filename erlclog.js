@@ -6,6 +6,8 @@ const { erlcEmoji } = require('./utils/emoji');
 const PRC_KEY = process.env.PRC_KEY || '';
 const ERLC_TIMEOUT_MS = Number(process.env.ERLC_TIMEOUT_MS || 8000);
 const ERLC_EMBED_COLOR = process.env.ERLC_EMBED_COLOR || '#2b2d31';
+const ERLC_JOIN_COLOR = process.env.ERLC_JOIN_COLOR || '#30c331';
+const ERLC_LEAVE_COLOR = process.env.ERLC_LEAVE_COLOR || '#f63136';
 
 // Backoff and spacing configuration
 const BACKOFF_BASE = Number(process.env.ERLC_BACKOFF_MS || 60000);
@@ -179,7 +181,7 @@ async function pollJoinLogs(client) {
       embeds.push(createEmbed({
         title: `${erlcEmoji('join')} Join Logs`,
         description: joinLines.join('\n'),
-        color: '#38cd38',
+        color: ERLC_JOIN_COLOR,
         timestamp: true
       }));
     }
@@ -187,7 +189,7 @@ async function pollJoinLogs(client) {
       embeds.push(createEmbed({
         title: `${erlcEmoji('leave')} Leave Logs`,
         description: leaveLines.join('\n'),
-        color: '#fc2f2f',
+        color: ERLC_LEAVE_COLOR,
         timestamp: true
       }));
     }
