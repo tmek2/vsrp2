@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 
-const GLOBAL_EMBED_COLOR = process.env.GLOBAL_EMBED_COLOR || '#fc2f56';
+const GLOBAL_EMBED_COLOR = process.env.GLOBAL_EMBED_COLOR || '#4c79eb';
 
 function createEmbed(options = {}) {
   const {
@@ -18,7 +18,7 @@ function createEmbed(options = {}) {
   const embed = new EmbedBuilder();
   if (title) embed.setTitle(title);
   if (description) embed.setDescription(description);
-  const effectiveColor = GLOBAL_EMBED_COLOR || color;
+  const effectiveColor = (typeof color !== 'undefined' && color !== null) ? color : GLOBAL_EMBED_COLOR;
   if (typeof effectiveColor !== 'undefined' && effectiveColor !== null) embed.setColor(effectiveColor);
   if (Array.isArray(fields) && fields.length) embed.addFields(...fields);
   if (footer && typeof footer === 'object') embed.setFooter(footer);
