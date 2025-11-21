@@ -302,7 +302,7 @@ module.exports = {
                             new ButtonBuilder()
                                 .setLabel('Quick Join')
                                 .setStyle(ButtonStyle.Link)
-                                .setURL('https://policeroleplay.community/join?code=SouthFLRP&placeId=2534724415')
+                                .setURL('https://policeroleplay.community/join?code=vermontST&placeId=2534724415')
                         )
                     ]
                 });
@@ -350,5 +350,6 @@ module.exports = {
 		}
 	}
 }
+
 
 
