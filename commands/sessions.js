@@ -292,7 +292,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Session Start')
-                            .setDescription(`The HR team has decided to start a session. If you voted, you **must** join within 15 minutes or else you will be moderated. You can quick join using the button below.\n\n> - **Server Name:** ${serverInfo.Name}\n> - **Server Code:** ${serverInfo.JoinKey}\n> - **Server Owner:** ${ownerUser}`)
+                            .setDescription(`The HR team has decided to start a session. If you voted, you **must** join within 15 minutes or else you will be moderated. You can quick join using the button below.\n\n> <:bullet:1435684662314930216> **Server Name:** ${serverInfo.Name}\n> <:bullet:1435684662314930216> **Server Code:** ${serverInfo.JoinKey}\n> <:bullet:1435684662314930216> **Server Owner:** ${ownerUser}`)
                             .setColor('#018f1b')
                             .setAuthor({ name: `@${user.username}`, iconURL: user.displayAvatarURL() })
                             .setImage(bannerFor('start'))
@@ -350,6 +350,7 @@ module.exports = {
 		}
 	}
 }
+
 
 
 
