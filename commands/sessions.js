@@ -193,7 +193,7 @@ module.exports = {
                 // Ping @here plus the configured role if present
                 const pingTag = SESSIONS_PING_ROLE_ID ? `<@&${SESSIONS_PING_ROLE_ID}>` : '';
                 await channel.send({
-                    content: `@here${pingTag ? ` | ${pingTag}` : ''}`,
+                    content: `@everyone${pingTag ? ` | ${pingTag}` : ''}`,
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Session Boost')
@@ -222,7 +222,7 @@ module.exports = {
                 // Duplicate the ping tag (matching original behavior) if configured
                 const pollPing = SESSIONS_PING_ROLE_ID ? `<@&${SESSIONS_PING_ROLE_ID}>` : '';
                 await channel.send({
-                    content: pollPing ? `${pollPing} | @here` : '@here',
+                    content: pollPing ? `${pollPing} | @everyone` : '@everyone',
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Session Poll')
@@ -288,7 +288,7 @@ module.exports = {
                 let msg;
                 try {
                     msg = await channel.send({
-                    content: `@here${startPing ? ` | ${startPing}` : ''}\n-# ${votersList}`,
+                    content: `@everyone${startPing ? ` | ${startPing}` : ''}\n-# ${votersList}`,
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Session Start')
@@ -350,6 +350,7 @@ module.exports = {
 		}
 	}
 }
+
 
 
 
