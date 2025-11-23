@@ -3,15 +3,14 @@ const axios = require('axios');
 const SessionStatusState = require('../models/sessionStatusState');
 // Emojis removed per request; no emoji helpers needed
 
-const GLOBAL_EMBED_COLOR = process.env.GLOBAL_EMBED_COLOR || '#4c79eb';
-const COLOR_HEX = GLOBAL_EMBED_COLOR || process.env.SESSIONS_EMBED_COLOR || '#5865F2';
+const SESSIONS_EMBED_COLOR = process.env.SESSIONS_EMBED_COLOR || '#5865F2';
+const COLOR_HEX = SESSIONS_EMBED_COLOR;
 // Explicit images per request
 const IMAGE_URL_1 = 'https://media.discordapp.net/attachments/1438861655890198602/1439669721812177057/vrmt_sessions.png?ex=691b5c69&is=691a0ae9&hm=3789ee3d9f71b7bc16ee35d914ddeaa7d8e8635eca81144855ec206030068597&=&format=webp&quality=lossless';
 const IMAGE_URL_2 = 'https://media.discordapp.net/attachments/1430646260032999465/1435002231760879646/clearline.png?ex=690b0a39&is=6909b8b9&hm=53c842e645874a78d117bd8546a057493c422e9f70c19fb8d1aeceab70a1229b&=&format=webp&quality=lossless';
 const IMAGE_URL_3 = 'https://media.discordapp.net/attachments/1438861655890198602/1439334160475885888/bottombanner_vsrp.png?ex=691acca5&is=69197b25&hm=02aeaa0c0fab3f6be2fc350471575092d1cdd3cf91b02dd09e53c66d055b686e&=&format=webp&quality=lossless&width=1872&height=103';
 const CHANNEL_ID = process.env.SESSION_STATUS_CHANNEL_ID || '';
 const POLL_INTERVAL_MS = Number(process.env.SESSION_STATUS_POLL_INTERVAL_MS || 60_000);
-const PRC_KEY = process.env.PRC_KEY || '';
 const SESSIONS_SCAN_LIMIT = Number(process.env.SESSIONS_HISTORY_SCAN_LIMIT || 50);
 
 function buildComponents(status) {
@@ -40,8 +39,8 @@ function buildScheduleEmbed() {
     '> Below is the current session schedule. Please be aware that adjustments may occur based on staff availability.',
     ' ',
     ' **Session Schedule** ',
-    ' <:sflrpbullet2:1439639810926182542> Weekdays: <t:1754953259:t> – <t:1754956800:t> ',
-    ' <:sflrpbullet2:1439639810926182542> Weekends: <t:1755021600:t> – <t:1754953259:t> '
+    ' <:bullet:1435684662314930216> Weekdays: <t:1754953259:t> – <t:1754956800:t> ',
+    ' <:bullet:1435684662314930216> Weekends: <t:1755021600:t> – <t:1754953259:t> '
   ].join('\n');
   e.setDescription(description);
   if (IMAGE_URL_2) e.setImage(IMAGE_URL_2);
@@ -64,19 +63,40 @@ function buildStatsEmbed(stats) {
   return e;
 }
 
-async function fetchStats() {
-  if (!PRC_KEY) return null;
+async function fetchStats(client) {
+  const prcKey = (client && client.config && client.config.PRC_KEY) || process.env.PRC_KEY || '';
+  if (!prcKey) return null;
   try {
-    const commonHeaders = { 'server-key': PRC_KEY, 'Accept': '*/*' };
-    const serverRes = await axios.get('https://api.policeroleplay.community/v1/server', { headers: commonHeaders, timeout: 10000 });
+    const commonHeaders = { 'server-key': prcKey, 'Accept': '*/*' };
+    const serverRes = await axios.get('https://api.policeroleplay.community/v1/server/', { headers: commonHeaders, timeout: 10000 });
     const staffRes = await axios.get('https://api.policeroleplay.community/v1/server/staff', { headers: commonHeaders, timeout: 10000 }).catch(() => ({ data: [] }));
     const queueRes = await axios.get('https://api.policeroleplay.community/v1/server/queue', { headers: commonHeaders, timeout: 10000 }).catch(() => ({ data: [] }));
     const server = serverRes.data || {};
+    let playersCount = Number(server.CurrentPlayers ?? 0);
+    if (!playersCount || Number.isNaN(playersCount)) {
+      try {
+        const playersRes = await axios.get('https://api.policeroleplay.community/v1/server/players', { headers: commonHeaders, timeout: 10000 });
+        const playersArr = Array.isArray(playersRes.data) ? playersRes.data : [];
+        playersCount = playersArr.length;
+      } catch {}
+    }
+    const staffData = staffRes?.data ?? [];
+    let staffCount = 0;
+    if (Array.isArray(staffData)) staffCount = staffData.length;
+    else if (Array.isArray(staffData.Staff)) staffCount = staffData.Staff.length;
+    else staffCount = Number(staffData.Online ?? staffData.Count ?? staffData.length ?? 0);
+
+    const queueData = queueRes?.data ?? [];
+    let queueCount = 0;
+    if (Array.isArray(queueData)) queueCount = queueData.length;
+    else if (Array.isArray(queueData.Queue)) queueCount = queueData.Queue.length;
+    else queueCount = Number(queueData.InQueue ?? queueData.Count ?? queueData.length ?? 0);
+
     const stats = {
-      players: Array.isArray(server.Players) ? server.Players.length : Number(server.PlayerCount || 0),
+      players: playersCount,
       maxPlayers: Number(server.MaxPlayers || 40),
-      staff: Array.isArray(staffRes.data) ? staffRes.data.length : Number(staffRes.data?.length || 0),
-      queue: Array.isArray(queueRes.data) ? queueRes.data.length : Number(queueRes.data?.length || 0),
+      staff: staffCount,
+      queue: queueCount,
       timestamp: Date.now()
     };
     return stats;
@@ -102,7 +122,7 @@ async function start(client, targetChannel = null) {
     panelStatus = initialStatus;
 
     // Compose three-embed panel per request
-    const initStats = await fetchStats();
+    const initStats = await fetchStats(client);
     const e1 = buildTopImageEmbed();
     const e2 = buildScheduleEmbed();
     const e3 = buildStatsEmbed(initStats || { players: 0, maxPlayers: 40, staff: 0, queue: 0, timestamp: Date.now() });
@@ -210,7 +230,7 @@ async function updatePanel(client) {
     if (panelStatus === 'offline') { try { console.log('sessionStatusPanel: skip stats update while offline'); } catch {} ; return; }
     const state = await SessionStatusState.findOne({ key: 'default' }).catch(() => null);
     if (!state || !state.channelId || !state.messageId) return;
-    const stats = await fetchStats();
+    const stats = await fetchStats(client);
     if (!stats) return;
     const channel = await client.channels.fetch(state.channelId).catch(() => null);
     if (!channel) return;
